@@ -1,31 +1,13 @@
-function Map(nom) {
-	this.tileset = new Tileset(nom);
+function Game() {
+	this.map = new Map(TILESET_FILE, this);
 	this.posPlayer = null;
 	this.posBoxes = [];
 	this.posTargets = [];
-	this.terrain = this.convertXSB(TERRAIN_TEST_2);
+	this.terrain = this.openXSB(TERRAIN_TEST_2);
 }
 
-Map.prototype.dessinerMap = function(context) {
-	for(var i = 0; i < GRID_WIDTH; i++) {
-		for(var j = 0; j < GRID_HEIGHT; j++) {
-			this.tileset.dessinerTile(this.terrain[i][j], context, j * TILE_SIZE, i * TILE_SIZE);
-		}
-	}
-	// targets
-	this.posTargets.forEach(function(element) {
-    this.tileset.dessinerTile(TILE_TARGET, context, element.x * TILE_SIZE, element.y * TILE_SIZE);
-  },  this);
-	// boxes
-	this.posBoxes.forEach(function(element) {
-    this.tileset.dessinerTile(TILE_BOX, context, element.x * TILE_SIZE, element.y * TILE_SIZE);
-  },  this);
-	// player
-	this.tileset.dessinerTile(TILE_MAN, context, this.posPlayer.x * TILE_SIZE, this.posPlayer.y * TILE_SIZE);
-};
-
 // ToDo
-Map.prototype.convertXSB = function(xsbTerrain) {
+Game.prototype.openXSB = function(xsbTerrain) {
 	var ptrStr = 0;
 	var isLineEnded = false;
 	var lengthStr = xsbTerrain.length;

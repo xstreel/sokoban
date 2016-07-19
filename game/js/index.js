@@ -1,4 +1,4 @@
-var map = new Map("sprites.png");
+var game = new Game();
 
 window.onload = function() {
 	var canvas = document.getElementById('gameCanvas');
@@ -7,5 +7,5 @@ window.onload = function() {
 	canvas.width = GRID_WIDTH * 32;
 	canvas.height = GRID_HEIGHT * 32;
 
-	map.dessinerMap(ctx);
+	game.map.drawMap(ctx);
 }

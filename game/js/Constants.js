@@ -1,3 +1,5 @@
+const TILESET_FILE = "sprites.png"
+
 const TILE_SIZE_IMAGE = 64;
 const TILE_SIZE = 32;
 
