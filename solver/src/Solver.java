@@ -1,3 +1,4 @@
+import java.awt.AWTException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -8,7 +9,7 @@ public class Solver {
 	static Set<Solution> visited = new HashSet<>();
 	static List<Solution> toVisit = new LinkedList<>();
 
-	public static void solve(Level level) {
+	public static void solve(Level level) throws AWTException, InterruptedException {
 		toVisit.add(level.init);
 		List<Solution> childs1 = childs(level.init, level);
 		List<Solution> childs2 = childs(level.init, level);
@@ -28,6 +29,7 @@ public class Solver {
 							for (Position move : child.moves) {
 								System.out.println(move);
 							}
+							PhysicalSolver.pushTheButton(child.moves);
 							return;
 						} else {
 							toVisit.add(child);

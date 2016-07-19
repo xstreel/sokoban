@@ -1,3 +1,4 @@
+import java.awt.AWTException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -22,7 +23,7 @@ public class LevelLoader {
 		List<Position> boxes = new ArrayList<>();
 		for (int i = 0; i < larray.length; i++) {
 			for (int j = 0; j < larray[0].length; j++) {
-				switch (larray[i][j]) { 
+				switch (larray[i][j]) {
 				/*  #.@+$* */
 				case ' ':
 					immovable[i][j] = ' ';
@@ -61,7 +62,7 @@ public class LevelLoader {
 		System.out.println(o);
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, AWTException, InterruptedException {
 		Level level = loadFile("l2.txt");
 		Solver.solve(level);
 	}
