@@ -18,5 +18,5 @@ Map.prototype.drawMap = function(context) {
     this.tileset.dessinerTile(TILE_BOX, context, element.x * TILE_SIZE, element.y * TILE_SIZE);
   },  this);
 	// player
-	this.game.tileset.dessinerTile(TILE_MAN, context, this.game.posPlayer.x * TILE_SIZE, this.game.posPlayer.y * TILE_SIZE);
+	this.tileset.dessinerTile(TILE_MAN, context, this.game.posPlayer.x * TILE_SIZE, this.game.posPlayer.y * TILE_SIZE);
 };
