@@ -37,26 +37,42 @@ Game.prototype.handleMovement = function(dx, dy) {
 
 	var cell = this.terrain[this.posPlayer.y][this.posPlayer.x];
 	if (nextCell == "$" || nextCell == "*") {
-		return; // REMOVE
 		var nextNextCell = this.terrain[this.posPlayer.y + 2 * dy][this.posPlayer.x + 2 * dx];
 		if (nextNextCell == "#" || nextNextCell == "$" || nextNextCell == "*") // wall or box or box on goal or
 			return;
 
-		// handle nextCell & nextNextCell state
-
-
+		// handle nextNextCell state
+		this.terrain[this.posPlayer.y + 2 * dy][this.posPlayer.x + 2 * dx] = (nextNextCell != ".") ? "$" : "*";
+		
+		// check for victory
+		if (this.isWinner()) {
+			console.log("win");
+		}
 	}
 	this.terrain[this.posPlayer.y][this.posPlayer.x] = (cell != "+") ? " " : ".";
-	this.terrain[this.posPlayer.y + dy][this.posPlayer.x + dx] = (nextCell != ".") ? "@" : "+";
+	this.terrain[this.posPlayer.y + dy][this.posPlayer.x + dx] = (nextCell != "." && nextCell != "*") ? "@" : "+";
+	
 	this.posPlayer.x += dx;
 	this.posPlayer.y += dy;
 
-	console.log(cell);
-	console.log(nextCell);
-
-	// ToDo move that
+	if ((nextCell == "$" || nextCell == "*") && this.isWinner()) {
+		console.log("win");
+	}
+		
+	// ToDo move & improve that
 	this.map.drawMap(this.context);
-}
+};
+
+Game.prototype.isWinner = function() {
+	for(var i = 0; i < GRID_HEIGHT; i++) {
+		for(var j = 0; j < GRID_WIDTH; j++) {
+			if (this.terrain[i][j] == "$") {
+				return 0;	
+			}
+		}
+	}
+	return 1;
+};
 
 Game.prototype.openXSB = function(xsbTerrain) {
 	var ptrStr = 0;
@@ -90,7 +106,6 @@ Game.prototype.openXSB = function(xsbTerrain) {
 		isLineEnded = false;
 	}
 	return terrainTmp;
-	console.log(terrainTmp);
 };
 
 Game.prototype.getPosPlayer = function() {
