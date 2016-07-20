@@ -3,20 +3,36 @@ function Map(nom, game) {
 	this.game = game;
 }
 
-Map.prototype.drawMap = function(context) {
+Map.prototype.drawMap = function() {
+
+	// background
+	var tileConvert = {};
+	tileConvert["#"] = TILE_WALL;
+	tileConvert["@"] = TILE_FLOOR;
+	tileConvert["+"] = TILE_FLOOR;
+	tileConvert["$"] = TILE_FLOOR;
+	tileConvert["*"] = TILE_FLOOR;
+	tileConvert["."] = TILE_FLOOR;
+	tileConvert[" "] = TILE_FLOOR;
+	tileConvert["o"] = TILE_OUT;
+
 	for(var i = 0; i < GRID_WIDTH; i++) {
 		for(var j = 0; j < GRID_HEIGHT; j++) {
-			this.tileset.dessinerTile(this.game.terrain[i][j], context, j * TILE_SIZE, i * TILE_SIZE);
+			var tile = this.game.terrain[i][j];
+			this.tileset.dessinerTile(tileConvert[tile], this.game.context, j * TILE_SIZE, i * TILE_SIZE);
+
+			if (tile == "+" || tile == ".") {
+				this.tileset.dessinerTile(TILE_TARGET, this.game.context, j * TILE_SIZE, i * TILE_SIZE);
+			}
+			if (tile == "@" || tile == "+") {
+				this.tileset.dessinerTile(TILE_MAN, this.game.context, j * TILE_SIZE, i * TILE_SIZE);
+			}
+			else if (tile == "$") {
+				this.tileset.dessinerTile(TILE_BOX, this.game.context, j * TILE_SIZE, i * TILE_SIZE);
+			}
+			else if (tile == "*") {
+				this.tileset.dessinerTile(TILE_BOX_CORRECT, this.game.context, j * TILE_SIZE, i * TILE_SIZE);
+			}
 		}
 	}
-	// targets
-	this.game.posTargets.forEach(function(element) {
-    this.tileset.dessinerTile(TILE_TARGET, context, element.x * TILE_SIZE, element.y * TILE_SIZE);
-  },  this);
-	// boxes
-	this.game.posBoxes.forEach(function(element) {
-    this.tileset.dessinerTile(TILE_BOX, context, element.x * TILE_SIZE, element.y * TILE_SIZE);
-  },  this);
-	// player
-	this.tileset.dessinerTile(TILE_MAN, context, this.game.posPlayer.x * TILE_SIZE, this.game.posPlayer.y * TILE_SIZE);
 };

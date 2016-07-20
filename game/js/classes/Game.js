@@ -1,16 +1,13 @@
 function Game() {
 	this.context = null;
 	this.map = new Map(TILESET_FILE, this);
-	this.posPlayer = null;
-	this.posBoxes = [];
-	this.posTargets = [];
 	this.terrain = this.openXSB(TERRAIN_TEST_2);
-	
+	this.posPlayer = this.getPosPlayer();
+
 	var that = this;
 	window.addEventListener('keydown', function(e) {
 		that.handleKeyDown(e);
 	});
-	//this.map.drawMap(this.context);
 }
 
 Game.prototype.handleKeyDown = function(e) {
@@ -24,33 +21,43 @@ Game.prototype.handleKeyDown = function(e) {
 	} else if(e.keyCode == KEY_UP) {
 		dx = 0;
 		dy = -1;
-	} else {
+	} else if(e.keyCode == KEY_DOWN) {
 		dx = 0;
 		dy = 1;
+	} else {
+		return;
 	}
-	var nextCell = this.terrain[this.posPlayer.y + dy][this.posPlayer.x + dx];
-	if (nextCell == TILE_WALL)
-		return;
-	
-	var stop = false;
-	this.posBoxes.forEach(function(element) {
-		// push a box ?
-		if (this.posPlayer.x + dx == element.x && this.posPlayer.y + dy == element.y) {
-			var nextNextCell = this.terrain[this.posPlayer.y + 2 * dy][this.posPlayer.x + 2 * dx];
-			if(nextNextCell == TILE_WALL)
-				stop = true;
-			
-		}
-	},  this);
-	if (stop)
-		return;
-	
-	this.posPlayer.x += dx;
-	this.posPlayer.y += dy;
-	this.map.drawMap(this.context);
+	this.handleMovement(dx, dy);
 };
 
-// ToDo
+Game.prototype.handleMovement = function(dx, dy) {
+	var nextCell = this.terrain[this.posPlayer.y + dy][this.posPlayer.x + dx];
+	if (nextCell == "#") // wall
+		return;
+
+	var cell = this.terrain[this.posPlayer.y][this.posPlayer.x];
+	if (nextCell == "$" || nextCell == "*") {
+		return; // REMOVE
+		var nextNextCell = this.terrain[this.posPlayer.y + 2 * dy][this.posPlayer.x + 2 * dx];
+		if (nextNextCell == "#" || nextNextCell == "$" || nextNextCell == "*") // wall or box or box on goal or
+			return;
+
+		// handle nextCell & nextNextCell state
+
+
+	}
+	this.terrain[this.posPlayer.y][this.posPlayer.x] = (cell != "+") ? " " : ".";
+	this.terrain[this.posPlayer.y + dy][this.posPlayer.x + dx] = (nextCell != ".") ? "@" : "+";
+	this.posPlayer.x += dx;
+	this.posPlayer.y += dy;
+
+	console.log(cell);
+	console.log(nextCell);
+
+	// ToDo move that
+	this.map.drawMap(this.context);
+}
+
 Game.prototype.openXSB = function(xsbTerrain) {
 	var ptrStr = 0;
 	var isLineEnded = false;
@@ -62,37 +69,35 @@ Game.prototype.openXSB = function(xsbTerrain) {
 		for(var j = 0; j < GRID_WIDTH; j++) {
 			if (ptrStr < lengthStr && !isLineEnded) {
 				switch (xsbTerrain[ptrStr]) {
-					case '#' :
-						terrainTmp[i][j] = TILE_WALL;
+					case '#': case '@': case '+':
+					case '$': case '*': case '.':
+						terrainTmp[i][j] = xsbTerrain[ptrStr];
 						break;
-					case '|' :
-						terrainTmp[i][j] = TILE_OUT;
+					case '|':
+						terrainTmp[i][j] = "o";
 						isLineEnded = true;
 						break;
-					case '@' :
-						terrainTmp[i][j] = TILE_FLOOR;
-						this.posPlayer = {x: j, y: i};
-						break;
-					case '$' :
-						terrainTmp[i][j] = TILE_FLOOR;
-						this.posBoxes.push({x: j, y: i});
-						break;
-					case '.' :
-						terrainTmp[i][j] = TILE_FLOOR;
-						this.posTargets.push({x: j, y: i});
-						break;
 					default:
-						terrainTmp[i][j] = TILE_FLOOR;
+						terrainTmp[i][j] = " ";
 						break;
 				}
 				ptrStr++;
 			}
 			else {
-				terrainTmp[i][j] = TILE_OUT;
+				terrainTmp[i][j] = "o";
 			}
 		}
 		isLineEnded = false;
 	}
 	return terrainTmp;
 	console.log(terrainTmp);
+};
+
+Game.prototype.getPosPlayer = function() {
+	for(var i = 0; i < GRID_HEIGHT; i++) {
+		for(var j = 0; j < GRID_WIDTH; j++) {
+			if (this.terrain[i][j] == "@" || this.terrain[i][j] == "+")
+				return {x: j, y: i};
+		}
+	}
 };
