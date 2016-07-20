@@ -63,7 +63,7 @@ public class LevelLoader {
 	}
 
 	public static void main(String[] args) throws IOException, AWTException, InterruptedException {
-		Level level = loadFile("l2.txt");
+		Level level = loadFile("l4.txt");
 		Solver.solve(level);
 	}
 }

@@ -42,23 +42,17 @@ public class Solver {
 
 	public static List<Solution> childs(Solution s, Level l) {
 		List<Solution> childs = new ArrayList<>();
-		Solution left = checkSolution(s.clone(), 0, -1, l);
-		Solution right = checkSolution(s.clone(), 0, +1, l);
-		Solution up = checkSolution(s.clone(), -1, 0, l);
-		Solution down = checkSolution(s.clone(), +1, 0, l);
-		if (left != null) {
-			childs.add(left);
+		childs.add(checkSolution(s.clone(), 0, -1, l)); // left
+		childs.add(checkSolution(s.clone(), 0, +1, l)); // right
+		childs.add(checkSolution(s.clone(), -1, 0, l)); // up
+		childs.add(checkSolution(s.clone(), +1, 0, l)); // down
+		List<Solution> purged = new ArrayList<>();
+		for (Solution child : childs) {
+			if (child != null) {
+				purged.add(child);
+			}
 		}
-		if (right != null) {
-			childs.add(right);
-		}
-		if (up != null) {
-			childs.add(up);
-		}
-		if (down != null) {
-			childs.add(down);
-		}
-		return childs;
+		return purged;
 	}
 
 	public static Solution checkSolution(Solution s, int moveI, int moveJ, Level l) {
@@ -82,6 +76,25 @@ public class Solver {
 				}
 				if (boxOn > 1) { // only 1 box allow on a position
 					return null;
+				} else { // check stuck
+					if (l.immovable[box.i][box.j] != '.') { // if not on a target, check if cornered
+						if (l.immovable[box.i - 1][box.j] == '#') {
+							if (l.immovable[box.i][box.j - 1] == '#') {
+								return null;
+							}
+							if (l.immovable[box.i][box.j + 1] == '#') {
+								return null;
+							}
+						}
+						if (l.immovable[box.i + 1][box.j] == '#') {
+							if (l.immovable[box.i][box.j - 1] == '#') {
+								return null;
+							}
+							if (l.immovable[box.i][box.j + 1] == '#') {
+								return null;
+							}
+						}
+					}
 				}
 			}
 		}
