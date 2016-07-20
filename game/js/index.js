@@ -6,6 +6,7 @@ window.onload = function() {
 
 	canvas.width = GRID_WIDTH * 32;
 	canvas.height = GRID_HEIGHT * 32;
-
+	
+	this.game.context = ctx;
 	game.map.drawMap(ctx);
 }
